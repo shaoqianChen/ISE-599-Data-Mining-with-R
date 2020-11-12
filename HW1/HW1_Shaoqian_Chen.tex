@@ -1,0 +1,540 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={ISE 599 HW 1},
+            pdfauthor={Shaoqian Chen},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\providecommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{ISE 599 HW 1}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{Shaoqian Chen}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+      \predate{\centering\large\emph}
+  \postdate{\par}
+    \date{1/28/2020}
+
+
+\begin{document}
+\maketitle
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#library(readr)}
+\KeywordTok{library}\NormalTok{(MASS)}
+\KeywordTok{library}\NormalTok{(}\DataTypeTok{help=}\NormalTok{MASS)}
+\KeywordTok{library}\NormalTok{(ISLR)}
+\KeywordTok{library}\NormalTok{(lubridate)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Attaching package: 'lubridate'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:base':
+## 
+##     date
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data1 =}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(}\StringTok{"crime.csv"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#data2 is the updated dataset without column "Precinct", "Sector", "Beat"}
+\KeywordTok{names}\NormalTok{(data1)<-}\KeywordTok{c}\NormalTok{(}\StringTok{"Report.Number"}\NormalTok{,}\StringTok{"ODate"}\NormalTok{,}\StringTok{"OTime"}\NormalTok{,}\StringTok{"RDate"}\NormalTok{,}\StringTok{"RTime"}\NormalTok{,}\StringTok{"category"}\NormalTok{,}\StringTok{"Description"}\NormalTok{,}\StringTok{"Precinct"}\NormalTok{,}\StringTok{"Sector"}\NormalTok{,}\StringTok{"Beat"}\NormalTok{,}\StringTok{"Neighborhood"}\NormalTok{)}
+\NormalTok{keep <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"Report.Number"}\NormalTok{,}\StringTok{"ODate"}\NormalTok{,}\StringTok{"OTime"}\NormalTok{,}\StringTok{"RDate"}\NormalTok{,}\StringTok{"RTime"}\NormalTok{,}\StringTok{"category"}\NormalTok{,}\StringTok{"Description"}\NormalTok{,}\StringTok{"Neighborhood"}\NormalTok{)}
+\NormalTok{data2 <-}\StringTok{ }\NormalTok{data1[keep]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(data2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  Report.Number              ODate            OTime     
+##  Min.   :2.008e+08   07/01/2017:   199   Min.   :   0  
+##  1st Qu.:2.008e+13   05/26/2017:   192   1st Qu.: 900  
+##  Median :2.012e+13   01/20/2016:   186   Median :1500  
+##  Mean   :1.633e+13   12/01/2015:   184   Mean   :1362  
+##  3rd Qu.:2.015e+13   11/25/2015:   182   3rd Qu.:1923  
+##  Max.   :2.011e+15   09/23/2014:   181   Max.   :2359  
+##                      (Other)   :480252   NA's   :2     
+##         RDate            RTime                      category     
+##  12/31/2008:   238   Min.   :   0   CAR PROWL           :137766  
+##  03/31/2014:   196   1st Qu.: 950   THEFT-ALL OTHER     : 49624  
+##  06/18/2018:   195   Median :1408   THEFT-SHOPLIFT      : 44768  
+##  05/12/2014:   193   Mean   :1355   BURGLARY-RESIDENTIAL: 43908  
+##  07/05/2016:   193   3rd Qu.:1818   MOTOR VEHICLE THEFT : 40362  
+##  01/21/2014:   192   Max.   :2359   BURGLARY-COMMERCIAL : 21274  
+##  (Other)   :480169   NA's   :2      (Other)             :143674  
+##              Description                  Neighborhood   
+##  THEFT-CARPROWL    :122025   DOWNTOWN COMMERCIAL: 45127  
+##  THEFT-SHOPLIFT    : 44768   NORTHGATE          : 28480  
+##  THEFT-OTH         : 43164   CAPITOL HILL       : 28296  
+##  VEH-THEFT-AUTO    : 35202   QUEEN ANNE         : 25172  
+##  BURGLARY-FORCE-RES: 26417   SLU/CASCADE        : 21630  
+##  THEFT-BUILDING    : 19718   UNIVERSITY         : 19167  
+##  (Other)           :190082   (Other)            :313504
+\end{verbatim}
+
+Question 1 Find the number of neighborhoods and crime categories in the
+dataset
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Return the number of neighborhoods}
+\KeywordTok{length}\NormalTok{(}\KeywordTok{table}\NormalTok{(data2}\OperatorTok{$}\NormalTok{Neighborhood))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 59
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Return the numnber of crime categories}
+\KeywordTok{length}\NormalTok{(}\KeywordTok{table}\NormalTok{(data2}\OperatorTok{$}\NormalTok{category))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 31
+\end{verbatim}
+
+59 Neighborhood 31 Crime Categories
+
+Question 2 Report the total number of crimes in each neighborhood. What
+neighborhood is most dangerous?
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(magrittr)}
+\NormalTok{dataQ2<-data2[}\KeywordTok{c}\NormalTok{(}\StringTok{"Report.Number"}\NormalTok{,}\StringTok{"Neighborhood"}\NormalTok{)]}
+\KeywordTok{table}\NormalTok{(data2}\OperatorTok{$}\NormalTok{Neighborhood)[}\KeywordTok{table}\NormalTok{(data2}\OperatorTok{$}\NormalTok{Neighborhood) }\OperatorTok{%>%}\StringTok{ }\NormalTok{which.max]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## DOWNTOWN COMMERCIAL 
+##               45127
+\end{verbatim}
+
+The most dangerous neighborhood is DOWNTOWN COMMERCIAL, it has 45127
+crimes
+
+Question 3
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Question 1 using pipe}
+\KeywordTok{library}\NormalTok{(magrittr)}
+\NormalTok{data2}\OperatorTok{$}\NormalTok{Neighborhood }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\NormalTok{unique }\OperatorTok{%>%}
+\StringTok{  }\NormalTok{length}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 59
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data2}\OperatorTok{$}\NormalTok{category }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\NormalTok{unique }\OperatorTok{%>%}
+\StringTok{  }\NormalTok{length}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 31
+\end{verbatim}
+
+Same result as the previous questions.
+
+Question 4
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{QueenAnne <-}\StringTok{ }\NormalTok{data2}\OperatorTok{$}\NormalTok{Neighborhood}\OperatorTok{==}\StringTok{"QUEEN ANNE"}
+\NormalTok{dataQ4 <-}\StringTok{ }\NormalTok{data2[QueenAnne,]}
+\KeywordTok{max}\NormalTok{(}\KeywordTok{summary}\NormalTok{(dataQ4}\OperatorTok{$}\NormalTok{category))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 10115
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(dataQ4}\OperatorTok{$}\NormalTok{category)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                                                      AGGRAVATED ASSAULT 
+##                                  17                                 402 
+##               AGGRAVATED ASSAULT-DV                               ARSON 
+##                                 189                                  45 
+##                 BURGLARY-COMMERCIAL  BURGLARY-COMMERCIAL-SECURE PARKING 
+##                                1359                                 125 
+##                BURGLARY-RESIDENTIAL BURGLARY-RESIDENTIAL-SECURE PARKING 
+##                                2193                                 991 
+##                           CAR PROWL                  DISORDERLY CONDUCT 
+##                               10115                                   7 
+##                                 DUI           FAMILY OFFENSE-NONVIOLENT 
+##                                 793                                 180 
+##                              GAMBLE                            HOMICIDE 
+##                                   0                                   9 
+##                LIQUOR LAW VIOLATION                           LOITERING 
+##                                  57                                   1 
+##                 MOTOR VEHICLE THEFT                            NARCOTIC 
+##                                2284                                 236 
+##                         PORNOGRAPHY                        PROSTITUTION 
+##                                   2                                  24 
+##                                RAPE                  ROBBERY-COMMERCIAL 
+##                                  62                                 129 
+##                 ROBBERY-RESIDENTIAL                      ROBBERY-STREET 
+##                                  25                                 200 
+##                   SEX OFFENSE-OTHER                     THEFT-ALL OTHER 
+##                                 199                                2225 
+##                       THEFT-BICYCLE                      THEFT-BUILDING 
+##                                 585                                 881 
+##                      THEFT-SHOPLIFT                            TRESPASS 
+##                                1265                                 470 
+##                              WEAPON 
+##                                 102
+\end{verbatim}
+
+According to the summary, the most frequent crime category in the Queen
+Anne neighborhood is ``Car Prowl''
+
+Question 5 Report a two-column table comparing the number of crimes per
+month(from RDate) What month seems to be more dangerous?
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(lubridate)}
+\KeywordTok{head}\NormalTok{(data2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   Report.Number      ODate OTime      RDate RTime
+## 1     2.008e+13 12/13/1908  2114 12/13/2008  2114
+## 2     2.010e+13 06/15/1964     0 06/15/2010  1031
+## 3     2.012e+12 01/01/1973     0 01/25/2012  1048
+## 4     2.013e+13 06/01/1974     0 09/09/2013  1117
+## 5     2.016e+13 01/01/1975     0 08/11/2016  1054
+## 6     1.975e+12 12/16/1975   900 12/16/1975  1500
+##                    category        Description             Neighborhood
+## 1                       DUI         DUI-LIQUOR CENTRAL AREA/SQUIRE PARK
+## 2 FAMILY OFFENSE-NONVIOLENT        CHILD-OTHER               QUEEN ANNE
+## 3         SEX OFFENSE-OTHER       SEXOFF-OTHER                NORTHGATE
+## 4         SEX OFFENSE-OTHER       SEXOFF-OTHER                  UNKNOWN
+## 5         SEX OFFENSE-OTHER       SEXOFF-OTHER                  UNKNOWN
+## 6      BURGLARY-RESIDENTIAL BURGLARY-FORCE-RES     LAKEWOOD/SEWARD PARK
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dataQ5 <-}\StringTok{ }\NormalTok{data2[}\KeywordTok{c}\NormalTok{(}\StringTok{"RDate"}\NormalTok{)]}
+\NormalTok{month <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{,}\DecValTok{3}\NormalTok{,}\DecValTok{4}\NormalTok{,}\DecValTok{5}\NormalTok{,}\DecValTok{6}\NormalTok{,}\DecValTok{7}\NormalTok{,}\DecValTok{8}\NormalTok{,}\DecValTok{9}\NormalTok{,}\DecValTok{10}\NormalTok{,}\DecValTok{11}\NormalTok{,}\DecValTok{12}\NormalTok{)}
+\NormalTok{dataQ5_}\DecValTok{1}\NormalTok{ <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\StringTok{"Month"}\NormalTok{ =}\StringTok{ }\NormalTok{month,}\StringTok{"Total_Num"}\NormalTok{=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{))}
+\KeywordTok{head}\NormalTok{(dataQ5)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        RDate
+## 1 12/13/2008
+## 2 06/15/2010
+## 3 01/25/2012
+## 4 09/09/2013
+## 5 08/11/2016
+## 6 12/16/1975
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(dataQ5)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##         RDate       
+##  12/31/2008:   238  
+##  03/31/2014:   196  
+##  06/18/2018:   195  
+##  05/12/2014:   193  
+##  07/05/2016:   193  
+##  01/21/2014:   192  
+##  (Other)   :480169
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dataQ5_}\DecValTok{1}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    Month Total_Num
+## 1      1         0
+## 2      2         0
+## 3      3         0
+## 4      4         0
+## 5      5         0
+## 6      6         0
+## 7      7         0
+## 8      8         0
+## 9      9         0
+## 10    10         0
+## 11    11         0
+## 12    12         0
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(stringr)}
+\NormalTok{a1 =}\StringTok{ }\KeywordTok{str_split}\NormalTok{(dataQ5}\OperatorTok{$}\NormalTok{RDate,}\StringTok{"/"}\NormalTok{)}
+\NormalTok{month <-}\StringTok{ }\KeywordTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{,}\KeywordTok{length}\NormalTok{(a1))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\KeywordTok{length}\NormalTok{(a1))}
+\NormalTok{  \{}
+\NormalTok{    month[i] =}\StringTok{ }\NormalTok{a1[[i]][}\DecValTok{1}\NormalTok{]}
+\NormalTok{\}}
+\NormalTok{dataQ5}\OperatorTok{$}\NormalTok{Month =}\StringTok{ }\NormalTok{month}
+\KeywordTok{head}\NormalTok{(dataQ5)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        RDate Month
+## 1 12/13/2008    12
+## 2 06/15/2010    06
+## 3 01/25/2012    01
+## 4 09/09/2013    09
+## 5 08/11/2016    08
+## 6 12/16/1975    12
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Q5_ans<-}\KeywordTok{as.data.frame}\NormalTok{(}\KeywordTok{table}\NormalTok{(dataQ5}\OperatorTok{$}\NormalTok{Month))}
+\KeywordTok{names}\NormalTok{(Q5_ans)<-}\KeywordTok{c}\NormalTok{(}\StringTok{"Month"}\NormalTok{,}\StringTok{"Number_Crimes"}\NormalTok{)}
+\NormalTok{Q5_ans}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    Month Number_Crimes
+## 1     01         43006
+## 2     02         37302
+## 3     03         40860
+## 4     04         40770
+## 5     05         43672
+## 6     06         42479
+## 7     07         39214
+## 8     08         39223
+## 9     09         38967
+## 10    10         40248
+## 11    11         37672
+## 12    12         37963
+\end{verbatim}
+
+May seems to be more dangerous.
+
+Question 6 Draw a lineplot of the number of crimes as a function of
+month (in RDate)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot}\NormalTok{(}\KeywordTok{table}\NormalTok{(dataQ5}\OperatorTok{$}\NormalTok{Month),}\DataTypeTok{type=}\StringTok{"o"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{HW1_Shaoqian_Chen_files/figure-latex/unnamed-chunk-14-1.pdf}
+
+Question 7 Use vertical barplots to compare the number of crimes by
+category in Seattle.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dataQ7 <-}\StringTok{ }\NormalTok{data2}\OperatorTok{$}\NormalTok{category}
+\KeywordTok{as.data.frame}\NormalTok{(}\KeywordTok{table}\NormalTok{(dataQ7))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                                 dataQ7   Freq
+## 1                                         262
+## 2                   AGGRAVATED ASSAULT  13954
+## 3                AGGRAVATED ASSAULT-DV   6307
+## 4                                ARSON   1009
+## 5                  BURGLARY-COMMERCIAL  21274
+## 6   BURGLARY-COMMERCIAL-SECURE PARKING   1042
+## 7                 BURGLARY-RESIDENTIAL  43908
+## 8  BURGLARY-RESIDENTIAL-SECURE PARKING   7667
+## 9                            CAR PROWL 137766
+## 10                  DISORDERLY CONDUCT    245
+## 11                                 DUI  11849
+## 12           FAMILY OFFENSE-NONVIOLENT   6372
+## 13                              GAMBLE     17
+## 14                            HOMICIDE    250
+## 15                LIQUOR LAW VIOLATION   1588
+## 16                           LOITERING     82
+## 17                 MOTOR VEHICLE THEFT  40362
+## 18                            NARCOTIC  16428
+## 19                         PORNOGRAPHY    154
+## 20                        PROSTITUTION   3503
+## 21                                RAPE   1758
+## 22                  ROBBERY-COMMERCIAL   4103
+## 23                 ROBBERY-RESIDENTIAL    988
+## 24                      ROBBERY-STREET  11096
+## 25                   SEX OFFENSE-OTHER   5783
+## 26                     THEFT-ALL OTHER  49624
+## 27                       THEFT-BICYCLE  10206
+## 28                      THEFT-BUILDING  19718
+## 29                      THEFT-SHOPLIFT  44768
+## 30                            TRESPASS  14733
+## 31                              WEAPON   4560
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{barplot}\NormalTok{(}\KeywordTok{table}\NormalTok{(dataQ7), }\DataTypeTok{main=}\StringTok{"Crime Distribution"}\NormalTok{,}
+   \DataTypeTok{xlab=}\StringTok{"Type of Crimes"}\NormalTok{,}\DataTypeTok{cex.axis =}\FloatTok{0.4}\NormalTok{,}\DataTypeTok{cex.names =} \FloatTok{0.3}\NormalTok{,}\DataTypeTok{las=}\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{HW1_Shaoqian_Chen_files/figure-latex/unnamed-chunk-16-1.pdf}
+
+
+\end{document}

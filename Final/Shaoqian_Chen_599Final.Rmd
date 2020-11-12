@@ -1,0 +1,132 @@
+---
+title: "Shaoqian_Chen_599Final"
+author: "Shaoqian Chen"
+date: "4/22/2020"
+output: html_document
+---
+
+```{r}
+library(lubridate)
+#library(tidyverse)
+library(ggmap)
+library(dplyr)
+library(readr)
+ggmap::register_google(key = "AIzaSyDjdKw8npxWHoH5eL85_OrfxTUSyf8Wxcg")
+```
+
+
+```{r}
+mymap = get_map(location = "California",zoom=6)
+ggmap(mymap)
+```
+
+
+
+```{r}
+geocode("Yolo County", output = c("latlon"))
+```
+
+```{r}
+df_no_latlon = select(read_csv("covid_confirmed_usafacts.csv")[-1,],'County Name',State, '4/21/20')
+
+df_full= df_no_latlon
+df_full[,'lat'] <- 0
+df_full[,'lon'] <- 0
+head(df_full)
+```
+
+
+```{r}
+aa = geocode(df_full$`County Name`[1], output = c("latlon"))$lon
+aa
+
+```
+
+
+```{r}
+df_full$lat[1] = 2
+head(df_full)
+dim(df_full)
+```
+
+
+```{r}
+for (val in df_full$`County Name`)
+{
+  temp_lat = geocode(val,output=c("latlon"))$lat
+  temp_lon = geocode(val,output=c("latlon"))$lon
+  location = which(grepl(val, df_full$'County Name'))
+  
+  df_full$lat[location] <- temp_lat
+  df_full$lon[location] <- temp_lon
+}
+```
+
+
+```{r}
+df_full
+```
+
+```{r}
+which(grepl("Autauga County", df_full$'County Name'))
+```
+
+```{r}
+df_clean <- df_full[!(df_full$'County Name'== "Statewide Unallocated"),]
+```
+
+
+```{r}
+df_clean
+write.csv(df_clean,"confirmed_datawith_latlon.csv")
+```
+
+
+```{r}
+myMap = get_map(location="USA",zoom=4,maptype = "roadmap")
+p=ggmap(myMap)
+p+geom_point(data=df_clean,aes(x=lon,y=lat,colour = 'red'),size = df_clean$`4/21/20`/10000,na.rm = TRUE)
+```
+
+
+```{r}
+p+geom_point(data=df_clean,aes(x=lon,y=lat),size = 1.5)
+```
+
+
+
+
+#Question 3
+```{r}
+data = read_csv("question3.csv")
+data$log <- log10(data$cases)^2
+head(data)
+```
+
+
+
+```{r}
+us <- c(left = -125, bottom = 25.75, right = -67, top = 49)
+US.map = get_stamenmap(us, zoom = 5, maptype = "toner-lite")
+```
+
+```{r}
+p = ggmap(US.map)
+p+ geom_point(data=data,aes(x=lon,y=lat),colour = "#b207f0",size = data$log/3.5,alpha=0.3,na.rm = TRUE)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

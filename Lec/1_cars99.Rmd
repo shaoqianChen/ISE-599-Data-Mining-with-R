@@ -1,0 +1,146 @@
+---
+geometry:
+  - tmargin=1cm
+  - bmargin=1cm
+  - lmargin=1.5cm
+  - rmargin=1cm
+output: pdf_document
+---
+
+```{r}
+library(MASS)
+library(help=MASS)        # functions and datasets in MASS - also go online
+```
+
+```{r}
+d1=Cars93
+str(d1)
+dim(d1)
+nrow(d1)
+```
+
+## SUBSETTING
+```{r}
+d2 = d1[c(1:10),c(2,4,9)]
+```
+
+```{r}
+d2
+# you may also try d2 = d1[c(1:10),]  and  d2 = d1[,c(2,4,9)]
+
+
+# Manufacturers and Prices
+d2 = data.frame(d1$Manufacturer,d1$Price)
+head(d2)
+d2 = subset(d1,select=c(Manufacturer,Price))    # must use select explicitly
+head(d2)
+
+# Ford cars
+d2 = subset(d1,subset = Manufacturer=="Ford")
+d2[,1:7]
+d2 = subset(d1,Price,subset = Manufacturer=="Ford")     # only prices
+d2
+d2 = subset(d1,c(Manufacturer,Price),subset = Manufacturer=="Ford")
+d2
+
+# Ford and Nissan cars
+d2 = subset(d1,subset=Manufacturer=="Ford"|Manufacturer=="Nissan")
+d2[,1:7]
+d2 = subset(d1,c(Manufacturer,Price),subset=Manufacturer=="Ford"|Manufacturer=="Nissan")
+d2
+
+# cars weighting > 3500
+d2 = d1[d1$Weight>4000,]   # there are 4
+d2[,1:7]
+```
+
+## COUNTING
+```{r}
+# how many exceeding 3000 lbs?
+aux = d1$Weight
+cars1=aux[aux>3000]
+length(cars1)   
+
+# there are 48 cars exceeding 3000 lbs
+
+# number of cars by DriveTrain? 
+table(d1$DriveTrain) 
+
+# relative freq
+prop.table(table(d1$DriveTrain))
+
+# by two factors
+table(d1$AirBags,d1$DriveTrain)
+
+# how many cars by AirBags & DriveTrain & Passengers?
+ftable(d1$AirBags,d1$DriveTrain,d1$Passengers)
+```
+
+## MEASURING
+```{r}
+# median weight per DriveTrain
+aux1=tapply(d1$Weight,d1$DriveTrain,median)
+sort1=aux1[order(aux1)]   # in ascending order
+sort1
+
+# relative freq
+rel1=prop.table(aux1)
+rel1
+
+# median weight per Airbags & DriveTrain
+aux = list(d1$AirBags,d1$DriveTrain)
+tapply(d1$Weight,aux,median)  # factors in a list()
+# change NA to 0
+m1=tapply(d1$Weight,aux,median)
+m1[is.na(m1)]=0
+m1
+```
+
+
+## SORTING
+```{r}
+d2 = subset(d1,select=c(Manufacturer,Price,Weight,Width))
+head(d2)
+
+# sort by Width
+d3 = d2[order(d2$Width),]
+head(d3)
+tail(d3)
+
+# sort by Width and break ties by Weight
+d3 = d2[order(d2$Width,d2$Weight),]
+head(d3)
+```
+
+## NAs
+
+```{r}
+# rows with NAs
+totals = rowSums(is.na(d1))
+totals[totals>0]
+
+d2 = d1[totals > 0,]
+rownames(d2) 
+
+# rows excluding NAs
+index = as.integer(rownames(d2))  
+index
+
+d3 = d1[-index,]    # wo NAs
+totals2 = rowSums(is.na(d3))
+totals2[totals2>0]
+```
+
+\newpage
+
+## SAMPLING
+
+$\hat{y} = 0.934 - 0.25\,x_1 + 1.76\,x_2$
+
+```{r}
+# Choose 4 cars at random
+set.seed(1928)                  
+x   = nrow(d1)
+idx = sample(x,4)         # [1] 63 51 36 41
+d1[idx,1:8]
+```

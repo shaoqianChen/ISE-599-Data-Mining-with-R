@@ -1,0 +1,51 @@
+---
+title: "Final_2"
+author: "Shaoqian Chen"
+date: "4/24/2020"
+output: html_document
+---
+
+```{r}
+library(lubridate)
+library(ggplot2)
+#library(tidyverse)
+library(ggmap)
+library(dplyr)
+library(readr)
+ggmap::register_google(key = "AIzaSyDjdKw8npxWHoH5eL85_OrfxTUSyf8Wxcg")
+```
+
+```{r}
+df = crime
+head(df)
+```
+
+```{r}
+dfselected <- df$offense=="robbery"|df$offense=="aggravated assault"|df$offense=="rape"|df$offense=="murder"
+df2 <- df[dfselected,]
+df2
+```
+
+```{r}
+geocode("Houston")
+Houston.map = get_googlemap(center=c(lon = -95.369345,lat = 29.760155),lon=c(-95.39681,-95.34188),lat = c(29.73631,29.78400),zoom = calc_zoom(c(-95.39681,-95.34188),c(29.73631,29.78400)), scale = 2)
+p = ggmap(Houston.map)
+```
+
+
+
+```{r}
+p+ geom_point(data = df2, aes(x=lon,y=lat,colour = factor(offense)),size = 1,alpha=1,na.rm = TRUE)
+```
+
+
+```{r}
+p+ geom_point(data = df2, aes(x=lon,y=lat,colour = factor(offense)),size = 1,alpha=0.1,na.rm = TRUE)
+```
+
+
+## b)
+```{r}
+p+ geom_point(data = df2, aes(x=lon,y=lat,colour = factor(offense)),size = 1,alpha=0.8,na.rm = TRUE)+facet_wrap(~offense,nrow = 2)
+```
+

@@ -1,0 +1,164 @@
+---
+title: "ISE 599 hw2"
+author: "Siyu Mao"
+date: "2/12/2020"
+output:
+  html_document: default
+  pdf_document: default
+---
+## ID:5310559365
+## Question1
+```{R}
+
+
+library(ggplot2)
+library(readr)
+library(dplyr)
+library(lubridate)
+library(MASS)
+library(forecast)
+library(expsmooth)
+
+
+################
+# Data perparing
+df = read.csv("StudyArea.csv")
+head(df,2)
+dim(df)
+colSums(is.na(df))
+# There only one NA values under FIRENAME
+df = na.omit(df)
+dim(df)
+# The na value is removed
+df = filter(df, TOTALACRES > 1000)
+dim(df)
+# Only focus on wild fires rgar burned more than 100 acres
+
+################
+# Question1
+df1 = subset(df, select = c(FIRENAME, YEAR_, OUTDATED, STATE, TOTALACRES))
+df1 <- within(df1, YEAR_ <- floor(df$YEAR_/10) * 10)
+head(df1)
+
+df1group_by_year = df1 %>% group_by(YEAR_) %>% summarise(count = n())
+ggplot(data = df1group_by_year, aes(x=YEAR_, y=count, group=1))+
+  geom_line(color='blue', size=1)+geom_point()
+
+# The overall number of wildfires increased first then decreased.
+# The highest point is between 2000 and 2010.
+df1group_by_year
+```
+
+
+## Question2
+```{R}
+################
+# Question2
+count_1 = count(df, YEAR_, STATE)
+ggplot(data=count_1, aes(YEAR_, n))+
+  geom_line(color="steelblue", size=1) +  facet_wrap(~STATE)
+ggplot(data=count_1, aes(YEAR_, n))+
+  geom_point(color="blue", size=1) +  facet_wrap(~STATE) + 
+  geom_smooth(method=lm)
+# The Arizona state wildfires has increased the most.
+```
+
+
+## Question3
+```{R}
+################
+# Question3
+sum_acre_burn = df %>% group_by(YEAR_) %>% summarise(count = sum(TOTALACRES))
+plot(sum_acre_burn, type="o", col="blue",panel.first = grid())
+title(main="The number of mean acreage burned", col.main="red", font.main=4)
+sum_acre_burn
+ggplot(data = sum_acre_burn) +
+  geom_smooth(mapping = aes(x = YEAR_, y = count))
+
+
+# The overall acreage burned increased over time.
+```
+
+
+## Question4
+```{R}
+################
+# Question4
+df2 = df %>% group_by(YEAR_, STATE) %>% 
+  summarise(total_amount =sum(TOTALACRES))
+
+ggplot(data=df2, aes(YEAR_, log(total_amount)))+geom_line(color="steelblue", size=1)+
+  geom_smooth(method=lm)+
+  facet_wrap(~STATE)
+# Washinton's burned down area increased the most.
+```
+
+
+## Question5
+```{R}
+################
+# Question5
+df3 = filter(df, CAUSE=='Natural')
+df4 = filter(df, CAUSE=='Human')
+df3 = df3 %>% group_by(CAUSE, YEAR_) %>% 
+  summarise(total_amount_1 =sum(TOTALACRES))
+df4 = df4 %>% group_by(CAUSE, YEAR_) %>% 
+  summarise(total_amount_2 =sum(TOTALACRES))
+
+ggplot() +
+  # blue plot
+  geom_smooth(method=lm,data=df3, aes(YEAR_, log(total_amount_1),color="human"),
+               size=1) +
+  # red plot
+  geom_smooth(method=lm,data=df4, aes(YEAR_, log(total_amount_2),color="natural"), 
+               size=1)
+
+# The blue line is Natural, the red line in Human.
+# There is a difference between them. The size of wildfires that were caused natural is bigger.
+
+################
+```
+
+
+## Question6
+```{R}
+# Question6
+df %>% group_by(STATE) %>% ggplot(aes(x = STATE, y = log(TOTALACRES))) + geom_violin() + geom_boxplot(width=0.1)
+```
+
+
+## Question7
+```{R}
+################
+# Question7
+df5 = df %>% group_by(ORGANIZATI) %>% summarise(count = mean(TOTALACRES)) 
+df5
+ggplot(data = df5) + geom_line(mapping = aes(x = ORGANIZATI, y = count, group=1))
+# Yes, the average wilfire size differ by federal organization.
+```
+
+
+## Question8
+```{R}
+################
+# Question8
+df6 = subset(df, select=c(STARTDATED,YEAR_))
+date_list = as.Date(df6$STARTDATED, format = "%m/%d/%y %H:%M")
+df6$date_list = yday(date_list)
+df7 = df6 %>% group_by(YEAR_) %>% summarise(earliest=min(date_list, na.rm=T),
+                                    latest=max(date_list,na.rm=T))
+df7
+z = ggplot(df7,aes(x=YEAR_))+
+      geom_line(aes(y=earliest,x=YEAR_,color="red"))+
+      geom_smooth(method=lm,aes(y=earliest,x=YEAR_,color="red"))+
+      geom_line(aes(y=latest,x=YEAR_,color="green"))+
+      geom_smooth(method=lm,aes(y=latest,x=YEAR_,color="green"))+
+      scale_color_discrete(name="Start_date",labels=c("earliest","latest"))
+z
+# Yes, the length increased over time.
+
+
+
+```
+
+

@@ -1,0 +1,95 @@
+---
+title: "Title comes here"
+author: "your name"
+date: "1/15/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Get DataFrame
+```{r}
+# install.packages("MASS")
+library(MASS)
+library(help=MASS)
+d1 = Cars93
+dim(d1)
+str(d1)
+n = nrow(d1)
+n
+```
+
+\newpage
+## SUBSETTING
+
+These are different ways of subsetting a dataframe
+```{r}
+d2 = d1[c(1:10),c(2,4,9)]
+d2
+
+d2 = data.frame(manufacturer = d1$Manufacturer, price = d1$Price)
+head(d2)
+
+d2 = subset(d1,select=c(Manufacturer,Price))
+head(d2)
+
+# Ford cars
+d2 = subset(d1,subset = Manufacturer == "Ford")
+dim(d2)
+head(d2,8)
+
+# cars weighting > 4000 
+d2 = d1[d1$Weight>4000,]
+d2
+# there are four cars
+```
+
+## COUNTING
+```{r}
+# number of cars by DriveTrain
+names(d1)
+# categories of DriveTrain
+unique(d1$DriveTrain)
+# number of cars
+table(d1$DriveTrain)
+# proportions
+prop.table(table(d1$DriveTrain))
+
+# count by two factors
+table(d1$AirBags,d1$DriveTrain)
+```
+
+## MEASURING
+```{r}
+# median weight per DriveTrain
+tapply(d1$Weight,d1$DriveTrain,median)
+# sorted
+aux1 = tapply(d1$Weight,d1$DriveTrain,median)
+sort1 = aux1[order(aux1)]
+sort1
+```
+## SORTING
+```{r}
+d2 = subset(d1,select=c(Manufacturer,Price,Weight,Width))
+head(d2)
+
+# sort by Width
+d3 = d2[order(d2$Width),]
+head(d3)
+```
+
+\newpage
+## Including Plots
+
+You can also embed plots, for example a scatterplot of `Weight` vs `MPG.city`
+\vspace{0.75cm}
+
+```{r, echo=FALSE}
+plot(d1$Weight,d1$MPG.city,xlab='mileage',ylab='weight')
+```
+\vspace{0.5cm}
+
+Note that the `{echo = FALSE}`
+prevents printing the R code that generated the plot.

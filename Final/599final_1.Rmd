@@ -1,0 +1,129 @@
+---
+title: "Shaoqian_Chen_599Final"
+author: "Shaoqian Chen 8831737894 Wed"
+date: "4/25/2020"
+output: html_document
+---
+```{r}
+library(dplyr)       # for data manipulation
+library(ggplot2)     # for data visualization
+library(stringr)     # for string functionality
+library(cluster)     # for general clustering algorithms
+library(factoextra)  # for visualizing cluster results
+library(yardstick)
+
+library(lubridate)
+library(ggplot2)
+library(ggmap)
+library(dplyr)
+library(readr)
+ggmap::register_google(key = "AIzaSyDjdKw8npxWHoH5eL85_OrfxTUSyf8Wxcg")
+```
+
+
+# Question 1
+## a)
+```{r}
+mnist <- dslabs::read_mnist()
+```
+
+```{r}
+set.seed(1)
+sample_1 = sample(60000,10000)
+features <- mnist$train$images[sample_1,]
+
+# Use k-means model with 10 centers and 10 random starts
+mnist_clustering <- kmeans(features, centers = 10, nstart = 10)
+
+# Print contents of the model output
+str(mnist_clustering)
+```
+
+```{r}
+# Extract cluster centers
+mnist_centers <- mnist_clustering$centers
+# Create mode function
+mode_fun <- function(x){ which.max(tabulate(x))
+}
+mnist_comparison <- data.frame(
+  cluster = mnist_clustering$cluster,
+  actual = mnist$train$labels[sample_1]
+) %>%
+  group_by(cluster) %>%
+  mutate(mode = mode_fun(actual)) %>%
+  ungroup() %>%
+  mutate_all(factor, levels = 0:9)
+# Create confusion matrix and plot results
+yardstick::conf_mat(
+  mnist_comparison,
+  truth = actual,
+  estimate = mode
+) %>%
+  autoplot(type = 'heatmap')
+```
+
+
+
+
+
+##  b)
+```{r}
+m1 = prcomp(features, scale = F)
+```
+
+```{r}
+newdata = m1$x
+actual = mnist$train$labels[sample_1]
+ggplot(data.frame(newdata),aes(x=PC1,y=PC2))+geom_text(aes(label=actual,color = factor(actual)),alpha=0.8)
+```
+## *From the plot above we can identidy that digit 0 are well seperated and digit 1 are not*
+
+
+
+
+
+# Questioin 2
+## a)
+```{r}
+df = crime
+#head(df)
+```
+
+```{r}
+dfselected <- df$offense=="robbery"|df$offense=="aggravated assault"|df$offense=="rape"|df$offense=="murder"
+df2 <- df[dfselected,]
+```
+
+```{r}
+geocode("Houston")
+Houston.map = get_googlemap(center=c(lon = -95.369345,lat = 29.760155),lon=c(-95.39681,-95.34188),lat = c(29.73631,29.78400),zoom = calc_zoom(c(-95.39681,-95.34188),c(29.73631,29.78400)), scale = 2)
+p = ggmap(Houston.map)
+```
+
+```{r}
+p+ geom_point(data = df2, aes(x=lon,y=lat,colour = factor(offense)),size = 1,alpha=1,na.rm = TRUE)
+```
+
+## b)
+```{r}
+p+ geom_point(data = df2, aes(x=lon,y=lat,colour = factor(offense)),size = 1,alpha=0.8,na.rm = TRUE)+facet_wrap(~offense,nrow = 2)
+```
+
+
+
+
+
+
+# Question 3
+```{r}
+data = read_csv("question3.csv")
+data$log <- log10(data$cases)
+head(data)
+```
+
+```{r}
+us <- c(left = -125, bottom = 25.75, right = -67, top = 49)
+US.map = get_stamenmap(us, zoom = 5, maptype = "toner-lite")
+p = ggmap(US.map)
+p+ geom_point(data=data,aes(x=lon,y=lat),colour = "#b207f0",size = data$log,alpha=0.3,na.rm = TRUE)
+```

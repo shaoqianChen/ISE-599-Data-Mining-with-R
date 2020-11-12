@@ -1,0 +1,117 @@
+---
+title: "HW3_Shaoqian_Chen"
+author: "Shaoqian Chen 8831737894"
+date: "2/25/2020"
+output: html_document
+---
+
+```{r}
+library(forecast)
+df = read.csv("hw3.csv")
+```
+
+
+# 1. (30 pts) An estimate of sales for Carlson Department Store had there been no hurricane
+```{r}
+carl = df[,2:6] %>% 
+        as.matrix %>% 
+        as.numeric %>% 
+        na.omit %>% 
+        as.numeric
+carlts = ts(carl, start = c(2012, 9), end = c(2016, 8), frequency = 12)
+carlts
+```
+
+```{r}
+plot(carlts, 
+     main = "Time Series of the Store Sales from Sep 2012 to Aug 2016", 
+     ylab = "Sales")
+```
+
+```{r}
+model1 <- auto.arima(carlts)
+model1_forecast <- forecast(model1, h = 4)
+```
+
+
+
+```{r}
+plot(model1_forecast, 
+     main = "Forecast Sales for Carlson Department Store", 
+     ylab = "Sales", xlab = "Time")
+```
+
+```{r}
+est_carlson_no_Hurr = 2.194225+2.621424+3.101586+4.404064
+est_carlson_no_Hurr
+```
+## An estimatye of sales for Carlson Department had there been no hurricane would be *12.3213*
+
+
+
+
+# 2. (40 pts) An estimate of county-wide department store sales had there been no hurricane
+```{r}
+all = df[,7:11] %>% 
+        as.matrix %>% 
+        as.numeric %>% 
+        na.omit %>% 
+        as.numeric
+allts = ts(all, start = c(2012, 9), end = c(2016, 8), frequency = 12)
+plot(allts, 
+     main = "Time Series of the Store Sales from Sep 2012 to Aug 2016", 
+     ylab = "Sales")
+```
+```{r}
+allts
+```
+
+
+```{r}
+model2 <- auto.arima(allts)
+model2_forecast <- forecast(model2, h = 4)
+summary(model2_forecast)
+```
+
+```{r}
+plot(model2_forecast, 
+     main = "Forecast Sales for County-wide Department Store", 
+     ylab = "Sales", xlab = "Time")
+```
+```{r}
+est_all_no_Hurr = 50.12901+57.32901+70.52901+102.92901	
+est_all_no_Hurr
+```
+## An estimatye of sales for Carlson Department had there been no hurricane would be *280.916*
+
+
+
+
+
+
+# 3. (20 pts) An estimate of lost sales for the Carlson Department Store for September through December
+
+
+```{r}
+sum(model1_forecast$mean)
+```
+## An estimate of lost sale for  Carlson Department Store for September through December would be *12.3213*
+
+
+
+# 4. (10 pts) Conclude for or against excess storm-related sales for the Carlson Department Store.
+
+```{r}
+allts_sep_dec = ts(all, start = c(2016, 9), end = c(2016, 12), frequency = 12)
+carl_Real = model1_forecast$mean*(allts_sep_dec/model2_forecast$mean)
+carl_Real #sale of caltson
+```
+
+```{r}
+sum(carl_Real)
+```
+
+
+## Comparing the potential actual Carlson Department stores sale for 2016 September through December with the estimate we see the actual sale was 13.19308, 
+## against the estimate of 12.3213. The Calson Store sale trend is actually decreasing, except for the storm period. 
+## So it is excess storm related sales

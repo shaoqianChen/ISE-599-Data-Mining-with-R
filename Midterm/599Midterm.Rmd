@@ -1,0 +1,248 @@
+---
+title: "ISE 599 Midterm "
+author: "Shaoqian Chen 8831737894 Wednesday"
+date: "3/4/2020"
+output: html_document
+---
+
+
+
+## 1. The OJ data set from the ISLR library contains 1070 purchases where the customer either purchased
+## Citrus Hill or Minute Maid Orange Juice (Use ?OJ for more details). It is of interest to predict
+## Purchase using all other variables. Use set.seed(1) to create a training set containing a random
+## sample of 800 observations, and a test set containing the remaining observations.
+## Fit a classification tree to the training data to answer questions (a) to (c).
+
+### a
+### Plot the tree. What is the training error rate? What is the test error rate?
+```{r}
+library(ISLR)
+library(tree)
+library(randomForest)
+library(gbm)
+library(caret)
+str(OJ)
+```
+
+```{r}
+#RNGkind(sample.kind = 'Rounding')
+set.seed(1)
+train = sample(nrow(OJ),800)
+OJ.train = OJ[train, ]
+OJ.test = OJ[-train, ]
+```
+
+```{r}
+tree.OJ = tree(Purchase ~ . , data = OJ, subset = train)
+summary(tree.OJ)
+```
+
+```{r}
+plot(tree.OJ)
+text(tree.OJ,cex=0.6,pretty=0)
+title("Tree from the training set")
+```
+
+```{r}
+#test error rate
+OJ.pred= predict(tree.OJ, OJ.test, type = "class")
+table(OJ.test$Purchase, OJ.pred)
+mean(OJ.test$Purchase != OJ.pred)
+```
+#### *Training error rate = 16.5%;*
+#### *Test error rate = 22.59259%*
+
+
+
+### b
+### Use set.seed(2) and cross-validation to find the best number of terminal nodes. 
+### Which tree size corresponds to the lowest cross-validated classification error rate?
+```{r}
+set.seed(2)
+tree1= cv.tree(tree.OJ, FUN = prune.misclass)
+names(tree1)
+```
+
+```{r}
+tree1
+```
+```{r}
+par(mfrow=c(1,2))
+plot(tree1$size, tree1$dev, type = "b", xlab = "Tree Size", ylab = "Deviance")
+plot(tree1$dev, tree1$k, type = "b")
+```
+#### *Tre size with 2 nodes corresponding to the lowest cross-validated classification error rate*
+
+
+
+### c
+### Plot a pruned tree with five terminal nodes. What is the test error rate? 
+```{r}
+pruned1= prune.tree(tree.OJ, best = 5)
+summary(pruned1)
+```
+
+
+```{r}
+plot(pruned1)
+text(pruned1)
+```
+
+```{r}
+pred2= predict(pruned1, OJ.test, type = "class")
+table(OJ.test$Purchase, pred2)
+mean(OJ.test$Purchase != pred2)
+```
+#### *Test error rate is 25.92593%*
+
+
+
+
+### d) (10 pts.) Which predictors are the most important? What is the test error rate? When fitting a boosted tree the number of trees, depth of trees, shrinkage, should be carefully selected. If a tuning grid is defined, the train function can be used to tune these parameters (see p217, handout).
+
+```{r}
+train2=randomForest(Purchase~.,data=OJ,subset=train,mtry=17,importance = T)
+summary(train2)
+```
+
+```{r}
+pred3= predict(train2, OJ.test,type = "class")
+table(OJ.test$Purchase, pred3)
+mean(OJ.test$Purchase != pred3)
+```
+
+```{r}
+importance(train2)
+```
+#### *LoyalCH is the most important predictor, test error rate is 20.74074%.*
+
+
+
+
+
+### e) (10 pts.) Fit a boosted tree selecting the best parameter values. What is the test error rate?
+```{r}
+gbmGrid = expand.grid(.n.minobsinnode = 10, .interaction.depth = seq(1,7,by = 2), .n.trees = seq(100,1000,by = 50),.shrinkage = c(0.01,0.1))
+set.seed(100)
+ytrain  = OJ.train$Purchase
+gbmTune = train(OJ.train[,-1],ytrain,method = 'gbm',tuneGrid = gbmGrid,verbose = FALSE)
+```
+
+```{r}
+gbmTune
+```
+
+```{r}
+boost1 = gbm(Purchase~.,data = OJ.train,distribution = "gaussian", n.trees = 400, interaction.depth = 3, shrinkage = 0.01, n.minobsinnode = 10)
+summary(boost1)
+grid()
+```
+
+
+```{r}
+pred5=predict(boost1,newdata=OJ[-train,],n.trees=400)
+pred5test = ifelse(pred5>1.5,2,1)
+table(OJ.test$Purchase,pred5test)
+result = table(OJ.test$Purchase,pred5test)
+```
+
+```{r}
+result5 =(result["MM",1]+result["CH",2])/(sum(result))
+result5
+```
+#### *The final values used for the model were n.trees = 400, interaction.depth = 3, shrinka ge = 0.01 and n.minobsinnode = 10.*
+#### *test error rate is 16.66667%.*
+
+
+##2. In segmenting the market, a breakfast cereal manufacturer uses health and diet consciousness as the segmentation variable. Four segments are developed:
+###  1 = Concerned about eating healthy foods
+###  2 = Concerned primarily about weight
+###  3 = Concerned about health because of illness
+###  4 = Unconcerned
+###  To distinguish between groups, a survey is conducted (see cereal.csv). In the survey, people are categorized as belonging to one of these groups. The most recent census reveals that 234,564,000 Americans are 18 and older.
+
+
+
+
+### a) (20 pts.) Use the prop.test function to find a 95% Confidence interval for the true proportion of American adults who are concerned about eating healthy foods. Then use it to estimate how many American adults belong to group 1.
+```{r}
+data2 <- read.csv("cereal.csv")
+head(data2)
+```
+
+```{r}
+table(data2$Group)
+dim(data2)
+```
+
+```{r}
+prop.test(269,1250)
+```
+
+```{r}
+lower = 234564000 * 0.1929252
+upper = 234564000 * 0.2392505
+lower
+upper
+```
+#### *The 95% confidence interval of American adults in Group 1 is: [45253307,56119554]*
+
+
+
+### b) (20 pts.) Each respondent was also asked the amount spent on breakfast cereal in an average month. The company would like to know whether on average the market segment concerned about eating healthy foods outspends the other market segments.
+
+
+
+```{r}
+d2 = data2
+d2[d2==3]=2
+d2[d2==4]=2
+```
+
+
+```{r}
+aux2 = tapply(d2$Spend, d2$Group, mean)
+aux2
+
+abs_diff = aux2[1]-aux2[2]
+abs_diff
+
+function1 <- function(x, n1, n2)
+{
+  n <- n1 + n2
+  idx_b <- sample(1:n, n1)
+  idx_a <- setdiff(1:n, idx_b)
+  mean_diff <- mean(x[idx_b]) - mean(x[idx_a])
+  return(mean_diff)
+}
+```
+
+
+```{r}
+x = d2$Spend
+difference = rep(0,1000)
+for(i in 1:1000) difference[i] = function1(x,269,981)
+hist(difference)
+abline(v=abs_diff,col = 'red')
+abs_diff
+text('0.9838437',x = 0.7,y = 200, col="red")
+```
+```{r}
+mean(difference > abs_diff)
+t.test(Spend~Group, data=d2, alternative = "greater")
+```
+####
+#### *p-values from random sampling and test on proportions agree*
+####
+#### *p-value is smaller than alpha(0.675)*
+#### *Reject H0;*
+#### *Conclude: Group 1 is outspend all other group.*
+
+
+# 3
+### USC ID: 8831737894
+### Row 8
+### CHits = 42 < 450
+### AtBat = 185 >147
+### CRBI = 9 < 114.5
+## *Result: 141.8*

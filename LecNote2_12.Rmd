@@ -1,0 +1,27 @@
+---
+title: "LectureNote2_12"
+author: "Shaoqian Chen"
+date: "2/12/2020"
+output: html_document
+---
+
+```{r, results='hide'}
+library(ggplot2)
+library(readr)
+library(dplyr)
+library(lubridate)
+library(MASS)
+library(forecast)
+library(expsmooth)
+```
+
+```{r}
+d0 = read.csv('rates.csv')
+d0
+```
+
+```{r}
+#plot
+plot(orates~row,d0,type = "l",xlim = xb,ylim=yb,ylab = 'occupancy rate',lab = "quarter")
+```
+

@@ -1,0 +1,432 @@
+---
+title: "HW4"
+author: "Shaoqian Chen 8831737894"
+date: "3/30/2020"
+output: html_document
+---
+
+```{r}
+library(contextual)
+```
+
+```{r}
+visits = 250
+simulations = 1000
+```
+
+
+# Question 1
+```{r}
+# define 1 options give a reward 10% of time, one option give a reward 30% of the time, one option give a reward 50% of the time
+prob_per_arm = c(0.1,0.9)
+bandit = BasicBernoulliBandit$new(prob_per_arm)
+# define policies (they differ by epsilon value)
+agents = list(Agent$new(EpsilonGreedyPolicy$new(0.1),bandit,'Epsilon = 0.1'),
+              Agent$new(EpsilonGreedyPolicy$new(0.3),bandit,'Epsilon = 0.3'),
+              Agent$new(EpsilonGreedyPolicy$new(0.5),bandit,'Epsilon = 0.5'))
+simulation = Simulator$new(agents,visits,simulations)
+history = simulation$run()
+```
+## Plot for 2 arms
+```{r}
+# probability of selecting the best design (arm) 
+# fraction of times the algorithm chooses best design
+plot(history,type = 'optimal',legend_position='bottomright', ylim = c(0,1))
+#
+# increasing curve means the algorithm is learning
+#
+# average reward at each visit
+plot(history,type = 'average',regret = F, legend_position='bottomright', ylim = c(0,1))
+# fix legend overlay
+plot(history,type = 'cumulative',regret =F,ylim = c(0,300))
+```
+
+
+```{r}
+visits = 250
+simulations = 1000
+# define 1 options give a reward 10% of time, one option give a reward 30% of the time, one option give a reward 50% of the time
+prob_per_arm = c(0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.9)
+bandit = BasicBernoulliBandit$new(prob_per_arm)
+# define policies (they differ by epsilon value)
+agents = list(Agent$new(EpsilonGreedyPolicy$new(0.1),bandit,'Epsilon = 0.1'),
+              Agent$new(EpsilonGreedyPolicy$new(0.3),bandit,'Epsilon = 0.3'),
+              Agent$new(EpsilonGreedyPolicy$new(0.5),bandit,'Epsilon = 0.5'))
+simulation = Simulator$new(agents,visits,simulations)
+history = simulation$run()
+```
+## Plot for 20 arms
+```{r}
+# probability of selecting the best design (arm) 
+# fraction of times the algorithm chooses best design
+plot(history,type = 'optimal',legend_position='bottomright', ylim = c(0,1))
+#
+# increasing curve means the algorithm is learning
+#
+# average reward at each visit
+plot(history,type = 'average',regret = F, legend_position='bottomright', ylim = c(0,1))
+
+plot(history,type = 'cumulative',regret =F,ylim = c(0,300))
+#
+
+```
+
+
+# Question 2
+## (a)
+```{r}
+# define 4 options give a reward 10% of time, and one option give a reward 90% of the time
+prob_per_arm = c(0.4,0.4,0.4,0.4,0.6)
+bandit = BasicBernoulliBandit$new(prob_per_arm)
+
+# define policies (they differ by epsilon value)
+agents = list(Agent$new(EpsilonGreedyPolicy$new(0.1),bandit,'Epsilon = 0.1'),
+              Agent$new(EpsilonGreedyPolicy$new(0.3),bandit,'Epsilon = 0.3'),
+              Agent$new(EpsilonGreedyPolicy$new(0.5),bandit,'Epsilon = 0.5'))
+simulation = Simulator$new(agents,visits,simulations)
+history = simulation$run()
+```
+
+```{r}
+# probability of selecting the best design (arm) 
+# fraction of times the algorithm chooses best design
+plot(history,type = 'optimal',legend_position='bottomright', ylim = c(0,1))
+#
+# increasing curve means the algorithm is learning
+#
+# average reward at each visit
+plot(history,type = 'average',regret = F, legend_position='bottomright', ylim = c(0,1))
+
+# fix legend overlay
+plot(history,type = 'cumulative',regret =F,ylim = c(0,300))
+#
+```
+
+
+
+## (b)
+```{r}
+# define 4 options give a reward 10% of time, and one option give a reward 90% of the time
+prob_per_arm = c(0.4,0.4,0.5,0.6,0.6)
+bandit = BasicBernoulliBandit$new(prob_per_arm)
+
+# define policies (they differ by epsilon value)
+agents = list(Agent$new(EpsilonGreedyPolicy$new(0.1),bandit,'Epsilon = 0.1'),
+              Agent$new(EpsilonGreedyPolicy$new(0.3),bandit,'Epsilon = 0.3'),
+              Agent$new(EpsilonGreedyPolicy$new(0.5),bandit,'Epsilon = 0.5'))
+simulation = Simulator$new(agents,visits,simulations)
+history = simulation$run()
+```
+```{r}
+# probability of selecting the best design (arm) 
+# fraction of times the algorithm chooses best design
+plot(history,type = 'optimal',legend_position='bottomright', ylim = c(0,1))
+#
+# increasing curve means the algorithm is learning
+#
+# average reward at each visit
+plot(history,type = 'average',regret = F, legend_position='bottomright', ylim = c(0,1))
+# fix legend overlay
+plot(history,type = 'cumulative',regret =F,ylim = c(0,300))
+#
+```
+
+
+
+
+## (c)
+```{r}
+# define 4 options give a reward 10% of time, and one option give a reward 90% of the time
+prob_per_arm = c(0.5,0.5,0.5,0.5,0.5)
+bandit = BasicBernoulliBandit$new(prob_per_arm)
+
+# define policies (they differ by epsilon value)
+agents = list(Agent$new(EpsilonGreedyPolicy$new(0.1),bandit,'Epsilon = 0.1'),
+              Agent$new(EpsilonGreedyPolicy$new(0.3),bandit,'Epsilon = 0.3'),
+              Agent$new(EpsilonGreedyPolicy$new(0.5),bandit,'Epsilon = 0.5'))
+simulation = Simulator$new(agents,visits,simulations)
+history = simulation$run()
+```
+```{r}
+# probability of selecting the best design (arm) 
+# fraction of times the algorithm chooses best design
+plot(history,type = 'optimal',legend_position='bottomright', ylim = c(0,1))
+#
+# increasing curve means the algorithm is learning
+#
+# average reward at each visit
+plot(history,type = 'average',regret = F, legend_position='bottomright', ylim = c(0,1))
+#
+# average reward up to visit t
+plot(history,type = 'cumulative',regret =F)
+# fix legend overlay
+plot(history,type = 'cumulative',regret =F,ylim = c(0,300))
+#
+```
+
+
+
+
+# Question 3 
+```{r}
+library(ggplot2)
+headlines= c('A','B','C','D','E')
+clicks = c(500,1000,825,490,880)
+visits = c(900,1800,1500,1100,1325)
+d0 = rbind(clicks,visits)
+d0 = data.frame(d0)
+names(d0) = headlines
+d0
+#
+# observed frequencies table
+#
+noclicks = visits - clicks
+noclicks
+observed = data.frame(rbind(clicks,noclicks))
+names(observed) = headlines
+observed
+```
+
+
+```{r}
+#
+# expected freqs
+#
+pooled = sum(clicks)/sum(visits)
+pooled
+
+expected_clicks = pooled*visits
+expected_noclicks = (1-pooled)*visits
+expected = data.frame(rbind(expected_clicks,expected_noclicks))
+names(expected) = headlines
+expected
+```
+
+```{r}
+#
+# Chi-square test
+#
+chisquare = 0
+for(i in 1:2)
+{
+  for(j in 1:5)
+  {
+    value = ((observed[i,j]-expected[i,j])^2)/expected[i,j]
+    chisquare = chisquare + value
+  }
+}
+chisquare
+```
+
+```{r}
+
+# p-value
+pvalue = 1 - pchisq(chisquare,2)
+pvalue
+#
+# reject Ho
+```
+
+```{r}
+# R function
+# 
+prop.test(clicks,visits)
+#
+# conclude Ha: not all headline click-rates are equal
+```
+
+
+```{r}
+props = NULL
+lls = NULL
+uls = NULL
+
+test = binom.test(500,900)
+test
+props = c(props,test$estimate)
+int = test$conf.int
+int
+lls = c(lls,int[1])
+uls = c(uls,int[2])
+
+test = binom.test(1000,1800)
+test
+props = c(props,test$estimate)
+int = test$conf.int
+int
+lls = c(lls,int[1])
+uls = c(uls,int[2])
+
+test = binom.test(825,1500)
+test
+props = c(props,test$estimate)
+int = test$conf.int
+int
+lls = c(lls,int[1])
+uls = c(uls,int[2])
+
+test = binom.test(490,1100)
+test
+props = c(props,test$estimate)
+int = test$conf.int
+int
+lls = c(lls,int[1])
+uls = c(uls,int[2])
+
+test = binom.test(880,1325)
+test
+props = c(props,test$estimate)
+int = test$conf.int
+int
+lls = c(lls,int[1])
+uls = c(uls,int[2])
+
+d = data.frame(headlines,props,lls,uls)
+d
+
+# plot
+ggplot(data=d) +
+  geom_errorbar(mapping = aes(x=headlines,ymin=lls,ymax=uls),width=0.1) +
+  geom_point(mapping = aes(x=headlines,y=props),size = 3)
+```
+
+
+
+
+```{r}
+
+test = function(x,n){binom.test(x,n)}
+out = mapply(test,clicks,visits)
+out
+class(out)
+class(out[1,1])
+# using mapply this way is a matrix of lists
+#
+out[4,1]
+out[4,1]$conf.int[1]
+out[4,1]$conf.int[2]
+#
+# collect all CIs lower limits
+for(i in 1:5) lls[i] = out[4,i]$conf.int[1]
+# collect all CIs upper limits
+for(i in 1:5) uls[i] = out[4,i]$conf.int[2]
+#
+d = data.frame(headlines,props,lls,uls)
+d
+# 
+# Suppose that we obtained larger samples
+#
+clicks = 10*clicks
+visits = 10*visits
+d0 = rbind(clicks,visits)
+d0 = data.frame(d0)
+names(d0) = headlines
+d0
+out = mapply(test,clicks,visits)
+# collect all CIs limits
+for(i in 1:5) lls[i] = out[4,i]$conf.int[1]
+for(i in 1:5) uls[i] = out[4,i]$conf.int[2]
+#
+d3 = data.frame(headlines,props,lls,uls)
+d3
+
+# plot
+ggplot(data=d3) +
+  geom_errorbar(mapping = aes(x=headlines,ymin=lls,ymax=uls),width=0.1) +
+  geom_point(mapping = aes(x=headlines,y=props),size = 3)
+
+```
+
+
+
+
+# Question 4
+```{r}
+library(dplyr)
+d4 = read.csv('cereal.csv')
+str(d4)
+```
+```{r}
+n = nrow(d4)
+table(d4$Group)
+```
+
+```{r}
+head(d4)
+```
+
+```{r}
+d4 %>%
+  group_by(d4$Group) %>%
+  summarise(sum_group = sum(Spend))
+tapply(d4$Spend, d4$Group, mean)
+```
+## The total and the mean of the amount spent by these four segments is different
+
+```{r}
+g1 <- d4$Group==1
+group1 = d4[g1,]
+
+g2 <- d4$Group==2
+group2 = d4[g2,]
+
+g3 <- d4$Group==3
+group3 = d4[g3,]
+
+g4 <- d4$Group==4
+group4 = d4[g4,]
+```
+
+```{r}
+props = NULL
+lls = NULL
+uls = NULL
+
+test = t.test(group1$Spend)
+test
+props = c(props,test$estimate)
+int = test$conf.int
+int
+lls = c(lls,int[1])
+uls = c(uls,int[2])
+
+test = t.test(group2$Spend)
+test
+props = c(props,test$estimate)
+int = test$conf.int
+int
+lls = c(lls,int[1])
+uls = c(uls,int[2])
+
+test = t.test(group3$Spend)
+test
+props = c(props,test$estimate)
+int = test$conf.int
+int
+lls = c(lls,int[1])
+uls = c(uls,int[2])
+
+test = t.test(group4$Spend)
+test
+props = c(props,test$estimate)
+int = test$conf.int
+int
+lls = c(lls,int[1])
+uls = c(uls,int[2])
+
+```
+
+
+```{r}
+headlines = c(1,2,3,4)
+d4_1 = data.frame(headlines,props,lls,uls)
+d4_1
+```
+
+```{r}
+ggplot(data=d4_1) +
+  geom_errorbar(mapping = aes(x=headlines,ymin=lls,ymax=uls),width=0.1) +
+  geom_point(mapping = aes(x=headlines,y=props),size = 3)
+```
+
+## The gragh above showing that people spent on segment 3 the most.

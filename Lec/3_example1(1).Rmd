@@ -1,0 +1,282 @@
+---
+output: 
+   pdf_document:
+     includes:
+     fig_width: 5
+     fig_height: 3
+---
+```{r}
+library(ggplot2)
+
+# list datasets
+data(package = "ggplot2")
+
+# Data sets in package ‘ggplot2’:
+# diamonds                     Prices of 50,000 round cut diamonds
+# economics                    US economic time series
+# economics_long               US economic time series
+# faithfuld                    2d density estimate of Old Faithful data
+# luv_colours                  'colors()' in Luv space
+# midwest                      Midwest demographics
+# mpg                          Fuel economy data from 1999 and 2008 for 38 popular models
+# msleep                       An updated and expanded version of the mammals sleep data
+# presidential                 Terms of 11 presidents from Eisenhower to Obama
+# seals                        Vector field of seal movements
+# txhousing                    Housing sales in TX
+
+head(mpg)
+# online description
+?mpg
+dim(mpg)
+#
+# class levels
+unique(mpg$class)
+# number of cars in each class level
+table(mpg$class)
+class(table(mpg$class))
+
+# SCATTERPLOT
+#
+ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = hwy), color = "blue")
+# there are points overlapping
+#
+# spread out the points 
+ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = hwy),position = "jitter")
+
+# change background -themes
+theme_set(theme_bw())
+ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = hwy))
+#
+# scatterplot with categories by color
+ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = hwy, color = class))
+#
+# there are cars, from different classes, overlapping 
+#
+ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = hwy, color = class),
+                                position='jitter')
+#
+# scatterplot with categories by size
+ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = hwy, size = class))
+#
+# different sizes identify different class
+#
+# scatterplot with categories by shape
+ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = hwy, shape = class))
+# 
+# SUVs were removed from plot
+
+# 
+# FACETS
+# 
+# split plot into subplots called facets
+#
+# scatterplots by one categorical var
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy), size = 0.7) +
+  facet_wrap(~ class, nrow = 2)
+#
+# scatterplots by two categorical var
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy), size = 0.7) +
+  facet_grid(drv ~ cyl)
+
+# scatterplot
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy))
+#
+# scatterplot with fitted line
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) +
+  geom_smooth(mapping = aes(x = displ, y = hwy),method = 'lm', se=F)
+#
+# scatterplot with fitted line and 95% CI on the mean
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) +
+  geom_smooth(mapping = aes(x = displ, y = hwy),method = 'lm')
+#
+# scatterplot with curve fitting
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) +
+  geom_smooth(mapping = aes(x = displ, y = hwy))
+#
+# or use global mapping
+ggplot(data = mpg,mapping = aes(x = displ, y = hwy)) + 
+  geom_point() +
+  geom_smooth()
+#
+# placing mapping inside a geom() function makes them local mappings
+#
+# curve fitting alone
+ggplot(data = mpg) + geom_smooth(mapping = aes(x = displ, y = hwy))
+#
+# curves by DriveTrain
+ggplot(data = mpg) + geom_smooth(mapping = aes(x = displ, y = hwy, group = drv))
+# curves colored by DriveTrain 
+ggplot(data = mpg) + geom_smooth(mapping = aes(x = displ, y = hwy, color = drv))
+#
+# color adds a legend
+#
+# curves colored by DriveTrain -no legend
+ggplot(data = mpg) + geom_smooth(mapping = aes(x = displ, y = hwy, color = drv), show.legend=F)
+# curve line types by DriveTrain 
+ggplot(data = mpg) + geom_smooth(mapping = aes(x = displ, y = hwy, linetype = drv))
+#
+# linetype adds a legend
+#
+# scatterplot by categories + with curve
+ggplot(mpg, mapping = aes(x = displ, y = hwy)) +
+  geom_point(mapping = aes(color = class)) +
+  geom_smooth()
+# scatterplot and curves by categories
+ggplot(mpg,mapping = aes(x = displ, y = hwy, color = drv))+
+  geom_point() + geom_smooth(se = FALSE)
+#
+# Densities plot
+ggplot(mpg,aes(cty)) + geom_density(aes(fill=factor(cyl)))
+# transparent and labeling
+g1 = ggplot(mpg,aes(cty)) + geom_density(aes(fill=factor(cyl)),alpha=0.8)
+g1 
+g1 + labs(title = 'Density plot',
+          subtitle = 'City Mileage by Number of cylinders',
+          x = 'City Mileage',
+          fill = 'cylinders',
+          caption = 'source: mpg dataset')
+```
+
+```{r}
+# Marginal plots
+#
+library(ggExtra)
+#
+g = ggplot(mpg, mapping = aes(x = displ, y = hwy)) +
+  geom_point() +
+  geom_smooth(method='lm',se=FALSE)
+ggMarginal(g,type = 'density')
+#
+```
+```{r}
+#
+g = ggplot(mpg, mapping = aes(x = displ, y = hwy)) +
+  geom_point() +
+  geom_smooth(method='lm',se=FALSE)
+ggMarginal(g,type = 'histogram')
+```
+```{r}
+#
+g = ggplot(mpg, mapping = aes(x = displ, y = hwy)) +
+  geom_point() +
+  geom_smooth(method='lm',se=FALSE)
+ggMarginal(g,type = 'boxplot',fill = 'transparent')
+#
+# Circling points
+#
+library(ggalt)
+ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = hwy, color = class))
+#
+# data to circle
+library(dplyr)
+names(mpg)
+mpg2 = select(mpg,displ,cty,hwy)
+head(mpg2)
+mpg2 = mpg2[mpg2$hwy>40 & mpg2$displ<2,]
+# plot
+gg = ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = hwy, color = class))
+gg + geom_encircle(aes(x = displ, y = hwy, color = class),data = mpg2, color='red',
+                   size = 2,spread = 0.001)
+#
+# Annotations
+#
+library(grid)
+#
+gg = ggplot(mpg) + geom_point(mapping = aes(x = displ, y = hwy, color = class))
+text1 = 'outliers?'
+specs1 = grid.text(text1,x = 0.22,y=0.94,
+                   gp = gpar(fontsize=10,fontface='bold',col='red'))
+gg + annotation_custom(specs1)
+# 
+# point labeling
+gg = ggplot(mpg) + geom_point(mapping = aes(x = displ, y = hwy, color = class))
+gg + geom_text(aes(x = displ, y = hwy,label=cty), size=2.2,hjust=-0.8)
+#
+
+# BARPLOTS
+#
+# use ggplot2::diamonds dataset 
+head(diamonds)
+# online description
+?diamonds
+
+table(diamonds$cut)
+# counts
+ggplot(data = diamonds) + geom_bar(mapping = aes(x = cut))
+#
+# or
+ggplot(data = diamonds) + stat_count(mapping = aes(x = cut))
+#
+# proportions accross all cut categories (group = 1)
+ggplot(data = diamonds) +  geom_bar(mapping = aes(x = cut, y = stat(prop), group = 1))
+
+# average depth by cut
+tapply(diamonds$depth,diamonds$cut,mean)
+# points
+ggplot(data = diamonds) +
+  stat_summary(mapping = aes(x = cut, y = depth))
+# points + vertical lines
+ggplot(data = diamonds) +
+  stat_summary(mapping = aes(x = cut, y = depth),
+              fun.ymin = min,
+              fun.ymax = max,
+              fun.y = median)
+
+# barplots with categories
+#
+# color given by cut
+ggplot(data = diamonds) + geom_bar(mapping = aes(x = cut, color = cut))   
+#
+# not good
+# 
+# use fill
+#
+ggplot(data = diamonds) + geom_bar(mapping = aes(x = cut, fill = cut))
+#
+# legend not needed, actually
+#
+
+# second categorical variable clarity (for filling the bars)
+ggplot(data = diamonds) + geom_bar(mapping = aes(x = cut, fill = clarity))
+#
+# counts by clarity category side-by-side
+ggplot(data = diamonds) + geom_bar(mapping = aes(x = cut, fill = clarity),position = "dodge")
+#
+# proportions across clarity categories
+ggplot(data = diamonds) + geom_bar(mapping = aes(x = cut, fill = clarity),position = "fill")
+
+#
+# COORDINATE SYSTEMS
+#
+# use mpg data
+#
+# vertical boxplots
+ggplot(mpg, mapping = aes(x = class, y = hwy)) + geom_boxplot()
+#
+# coord_flip() switches x and y axes
+ggplot(mpg, mapping = aes(x = class, y = hwy)) + geom_boxplot() + coord_flip()
+
+#
+# MAPS
+#
+# install.packages("maps")
+library(maps)
+library(help=maps)
+#
+tx <- map_data("state","texas")
+#
+ggplot(tx, aes(long, lat, group = group)) + geom_polygon(fill = "white", color = "black")
+#
+# set aspect ratio
+ggplot(tx, aes(long, lat, group = group)) + geom_polygon(fill = "white", color = "black") +
+  coord_quickmap()
+# 
+# map with no coordinates
+tx <- map("state","texas")
+```

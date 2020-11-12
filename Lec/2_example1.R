@@ -1,0 +1,59 @@
+
+# data
+d1 = read.csv("StudyArea_SmallFile.csv")
+str(d1)
+# subset cols
+d1 = subset(d1,select=c(FIRENAME,YEAR_,OUTDATED,STATE,TOTALACRES))
+dim(d1)
+head(d1)
+tail(d1)
+n = nrow(d1)
+n
+# split date, time
+# install.packages("stringr")
+library(stringr)
+a1 = str_split(d1$OUTDATED," ")
+head(a1)
+tail(a1)
+class(a1)
+# a1 has empty spaces or two string
+length(a1[[1]])
+length(a1[[n]])
+# first and only element in a1 is empty
+# last element in a1 is a set of two strings (one date, one time)
+
+# vectors filled with zeros
+year = rep(0,n)
+month = rep(0,n)
+day = rep(0,n)
+
+# use Rbase POSIXct() to convert string to POSIXct object, it gives NA if a1 is empty
+# use lubridate functions year, month, day to extract date components as numeric
+
+library(lubridate)
+for(i in 1:n)
+{
+  b1 = a1[[i]][1]
+  c1 = as.POSIXct(b1,format = "%m/%d/%y")
+  c1 = as.Date(c1)
+  year[i] = year(c1)
+  month[i] = month(c1)
+  day[i] = day(c1)
+}
+
+# add columns to dataframe d1
+head(d1)
+d1$Year = year
+d1$Month = month
+d1$Day = day
+tail(d1)
+head(d1)
+
+
+
+
+
+
+
+
+

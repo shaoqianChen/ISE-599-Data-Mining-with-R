@@ -1,0 +1,159 @@
+---
+title: "ISE 599 HW 1"
+author: "Shaoqian Chen"
+date: "1/28/2020"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+```{r}
+#library(readr)
+library(MASS)
+library(help=MASS)
+library(ISLR)
+library(lubridate)
+library(rlang)
+library(dplyr)
+library(readr)
+data1 = read.csv("crime.csv")
+```
+
+```{r}
+#data2 is the updated dataset without column "Precinct", "Sector", "Beat"
+names(data1)<-c("Report.Number","ODate","OTime","RDate","RTime","category","Description","Precinct","Sector","Beat","Neighborhood")
+keep <- c("Report.Number","ODate","OTime","RDate","RTime","category","Description","Neighborhood")
+data2 <- data1[keep]
+```
+
+```{r}
+summary(data2)
+```
+
+
+
+# Question 1
+## Find the number of neighborhoods and crime categories in the dataset
+
+```{r}
+#Return the number of neighborhoods
+length(table(data2$Neighborhood))
+
+#Return the numnber of crime categories
+length(table(data2$category))
+```
+## 59 Neighborhood; 
+
+## 31 Crime Categories
+
+
+# Question 2
+## Report the total number of crimes in each neighborhood. What neighborhood is most dangerous?
+```{r}
+library(magrittr)
+dataQ2<-data2[c("Report.Number","Neighborhood")]
+table(data2$Neighborhood)[table(data2$Neighborhood) %>% which.max]
+
+```
+## The most dangerous neighborhood is DOWNTOWN COMMERCIAL, it has 45127 crimes
+
+
+# Question 3
+```{r}
+#Question 1 using pipe
+library(magrittr)
+data2$Neighborhood %>% 
+  unique %>%
+  length
+
+data2$category %>% 
+  unique %>%
+  length
+```
+## Same result as the previous questions.
+```{r}
+dataQ3<-data2 %>%
+  group_by(Neighborhood = tolower(Neighborhood)) %>%
+  summarise(count = n())
+dataQ3
+```
+## According to the table above Downtown Commercial(45127 Crimes) is more dangerous than other area
+
+
+
+# Question 4
+```{r}
+QueenAnne <- data2$Neighborhood=="QUEEN ANNE"
+dataQ4 <- data2[QueenAnne,]
+max(summary(dataQ4$category))
+```
+
+```{r}
+summary(dataQ4$category)
+which.max(table(dataQ4$category))
+```
+## According to the summary, the most frequent crime category in the Queen Anne neighborhood is "Car Prowl"
+
+
+
+
+# Question 5 
+## Report a two-column table comparing the number of crimes per month(from RDate) What month seems to be more dangerous?
+```{r}
+library(lubridate)
+head(data2)
+```
+```{r}
+dataQ5 <- data2[c("RDate")]
+month <- c(1,2,3,4,5,6,7,8,9,10,11,12)
+dataQ5_1 <- data.frame("Month" = month,"Total_Num"=c(0))
+head(dataQ5)
+```
+
+```{r}
+library(stringr)
+a1 = str_split(dataQ5$RDate,"/")
+month <- rep(0,length(a1))
+```
+
+```{r}
+for(i in 1:length(a1))
+  {
+    month[i] = a1[[i]][1]
+}
+dataQ5$Month = month
+head(dataQ5)
+```
+
+```{r}
+Q5_ans<-as.data.frame(table(dataQ5$Month))
+names(Q5_ans)<-c("Month","Number_Crimes")
+Q5_ans
+```
+## May seems to be more dangerous.
+
+
+
+
+# Question 6 
+## Draw a lineplot of the number of crimes as a function of month (in RDate)
+```{r}
+plot(table(dataQ5$Month),type="o")
+```
+
+
+# Question 7 
+## Use vertical barplots to compare the number of crimes by category in Seattle.
+
+```{r}
+dataQ7 <- data2$category
+as.data.frame(table(dataQ7))
+```
+
+```{r}
+barplot(table(dataQ7), main="Crime Distribution",
+   xlab="Type of Crimes",cex.axis =0.4,cex.names = 0.3,las=2)
+```
+
+
